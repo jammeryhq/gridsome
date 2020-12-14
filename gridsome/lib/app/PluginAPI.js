@@ -104,6 +104,30 @@ class PluginAPI {
   afterBuild (fn) {
     this._on('afterBuild', fn)
   }
+
+  beforeLoadSources(handler) {
+    this._on('beforeLoadSources', handler)
+  }
+
+  afterLoadSources(handler) {
+    this._on('afterLoadSources', handler)
+  }
+
+  beforeCreateSchema(handler) {
+    this._on('beforeCreateSchema', handler)
+  }
+
+  afterCreateSchema(handler) {
+    this._on('afterCreateSchema', handler)
+  }
+
+  beforeCreatePages(handler) {
+    this._on('beforeCreatePages', handler)
+  }
+
+  afterCreatePages(handler) {
+    this._on('afterCreatePages', handler)
+  }
 }
 
 module.exports = PluginAPI

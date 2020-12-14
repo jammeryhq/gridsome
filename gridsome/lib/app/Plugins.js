@@ -76,12 +76,17 @@ class Plugins {
   }
 
   async loadSources() {
-    return this.run('loadSource', api => {
+    this.run('beforeLoadSources')
+    
+    this.run('loadSource', api => {
       return createSchemaActions(api, this._app)
     })
+
+    this.run('afterLoadSources')
   }
 
   async createSchema() {
+    this.run('beforeCreateSchema')
     const results = await this.run('createSchema', api => {
       return createSchemaActions(api, this._app)
     })
@@ -91,6 +96,8 @@ class Plugins {
       schema && this._app.schema._schemas.push(schema)
     )
 
+    this.run('afterCreateSchema')
+
     this._app.schema.buildSchema()
   }
 
@@ -99,6 +106,9 @@ class Plugins {
   }
 
   async createPages() {
+
+    this.run('beforeCreatePages', Date.now())
+
     const { pages } = this._app
     const now = Date.now() + process.hrtime()[1]
     const digest = hashString(now.toString())
@@ -120,6 +130,8 @@ class Plugins {
 
     pages._routes.findAndRemove(query)
     pages._pages.findAndRemove(query)
+
+    this.run('afterCreatePages')
   }
 
   async run(eventName, cb, ...args) {

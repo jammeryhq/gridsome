@@ -29,6 +29,8 @@ class FilesystemSource {
     this.refsCache = {}
 
     api.loadSource(async actions => {
+
+      console.log('loadSource via source-filesystem', Date.now())
       this.createCollections(actions)
       await this.createNodes(actions)
       if (isDev) this.watchFiles(actions)
