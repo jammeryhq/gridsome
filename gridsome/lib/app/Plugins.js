@@ -76,17 +76,17 @@ class Plugins {
   }
 
   async loadSources() {
-    this.run('beforeLoadSources')
-    
-    this.run('loadSource', api => {
+    await this.run('beforeLoadSources')
+
+    await this.run('loadSource', api => {
       return createSchemaActions(api, this._app)
     })
 
-    this.run('afterLoadSources')
+    await this.run('afterLoadSources')
   }
 
   async createSchema() {
-    this.run('beforeCreateSchema')
+    await this.run('beforeCreateSchema')
     const results = await this.run('createSchema', api => {
       return createSchemaActions(api, this._app)
     })
@@ -96,7 +96,7 @@ class Plugins {
       schema && this._app.schema._schemas.push(schema)
     )
 
-    this.run('afterCreateSchema')
+    await this.run('afterCreateSchema')
 
     this._app.schema.buildSchema()
   }
@@ -107,7 +107,7 @@ class Plugins {
 
   async createPages() {
 
-    this.run('beforeCreatePages', Date.now())
+    await this.run('beforeCreatePages', Date.now())
 
     const { pages } = this._app
     const now = Date.now() + process.hrtime()[1]
@@ -131,7 +131,7 @@ class Plugins {
     pages._routes.findAndRemove(query)
     pages._pages.findAndRemove(query)
 
-    this.run('afterCreatePages')
+    await this.run('afterCreatePages')
   }
 
   async run(eventName, cb, ...args) {
