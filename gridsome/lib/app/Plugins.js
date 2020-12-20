@@ -31,6 +31,11 @@ class Plugins {
     )
 
     app.hooks.bootstrap.tapPromise(
+      { name: 'buildSchema', label: 'Create GraphQL schema', phase: BOOTSTRAP_GRAPHQL },
+      () => this.createSchema()
+    )
+
+    app.hooks.bootstrap.tapPromise(
       { name: 'createPages', label: 'Create pages and templates', phase: BOOTSTRAP_PAGES },
       () => this.createPages()
     )
@@ -87,6 +92,7 @@ class Plugins {
 
   async createSchema() {
     await this.run('beforeCreateSchema')
+
     const results = await this.run('createSchema', api => {
       return createSchemaActions(api, this._app)
     })
@@ -96,9 +102,20 @@ class Plugins {
       schema && this._app.schema._schemas.push(schema)
     )
 
-    await this.run('afterCreateSchema')
+    const buildResult = this._app.schema.buildSchema()._composer
 
-    this._app.schema.buildSchema()
+    
+    const hookResults = await this.run('afterCreateSchema', api => {
+      return createSchemaActions(api, this._app)
+    })
+
+    hookResults.forEach(schema =>
+      schema && this._app.schema._schemas.push(schema)
+    )
+
+    const hookBuildResult = this._app.schema.buildSchema()._composer
+
+    this._app.schema.mergeSchemas([buildResult, hookBuildResult])
   }
 
   async configureServer(server) {

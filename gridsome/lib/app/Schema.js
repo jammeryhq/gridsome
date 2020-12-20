@@ -2,6 +2,7 @@ const autoBind = require('auto-bind')
 const { createSchema } = require('../graphql')
 const { graphql, execute } = require('graphql')
 const { deprecate } = require('../utils/deprecate')
+const { SchemaComposer } = require('graphql-compose')
 
 class Schema {
   constructor (app) {
@@ -40,6 +41,16 @@ class Schema {
     this._types = []
 
     return this
+  }
+
+  mergeSchemas(schemas) {
+    const mergeComposer = new SchemaComposer()
+    schemas.forEach(schema => {
+      mergeComposer.merge(schema)
+    })
+
+    this._schema = mergeComposer.buildSchema()
+    this._composer = mergeComposer
   }
 
   createContext () {

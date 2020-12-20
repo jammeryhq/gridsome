@@ -155,6 +155,10 @@ function createSchemaActions (api, app) {
 
     GraphQLJSON,
 
+    getSchema() {
+      return app.schema._schema
+    },
+
     addSchema (schema) {
       app.schema._schemas.push(schema)
     },
