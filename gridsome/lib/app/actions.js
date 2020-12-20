@@ -159,6 +159,10 @@ function createSchemaActions (api, app) {
       return app.schema._schema
     },
 
+    getComposer() {
+      return app.schema._composer
+    },
+
     addSchema (schema) {
       app.schema._schemas.push(schema)
     },
